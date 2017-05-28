@@ -1,0 +1,36 @@
+<div class="row">
+  <p>
+  <% @likes.each do |like| %>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title"><a href="/users/<%= like.user_id %>"><%= like.photo.user.username %></a>
+            <small><%= time_ago_in_words(like.photo.created_at)%> ago </small>
+          </h3>
+        </div>
+        <div class="panel-body">
+          <img src="<%= like.photo.image %>" class="img-responsive">
+        </div>
+      </div>
+    </div>
+  </div>
+  <% like.photo.comments.each do |comment| %>
+  <ul class="media-list">
+    <li class="media">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="media-body">
+          <h6 class="media-heading">
+            <a href="/users/<%= comment.user_id %>"><%= comment.user.username %></a>
+            <small>
+              <%= time_ago_in_words(comment.created_at)%> ago
+            </small>
+          </h6>
+          <%= comment.body%>
+        </div>
+      </div>
+    </li>
+  </ul>
+  <% end %>
+  <% end %>
+</div>

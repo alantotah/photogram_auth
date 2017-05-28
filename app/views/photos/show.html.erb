@@ -1,31 +1,88 @@
-<div class="page-header">
-  <h3>Photo #<%= @photo.id %></h3>
-</div>
+<div class="container">
+  <p></p>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title"><a href="/users/<%= @photo.user_id %>"><%= @photo.user.username %></a>
+            <small><%= time_ago_in_words(@photo.created_at)%> ago </small>
+          </h3>
+        </div>
+        <div class="panel-body">
+          <img src="<%= @photo.image %>" class="img-responsive">
 
-<div class="row">
-  <div class="col-md-12 mb-2">
-    <dl class="dl-horizontal">
-      <dt>Caption</dt>
-      <dd><%= @photo.caption %></dd>
+          <p>
+            <form action="/create_like" method="post">
+              <!-- Hidden input for authenticity token to protect from forgery -->
+              <input name="authenticity_token" type="hidden" value="1spKmsbbVkWby4jVNgHi334BC36GYjdcOPMGfZH5d+XnKYHxlSISOeN7tFuUD09aQMMTVJcuE8vY4vw4GrVcWQ==">
 
-      <dt>Image</dt>
-      <dd><%= @photo.image %></dd>
+              <input type="hidden" name="photo_id" value="<%= @photo.id %>">
 
-      <dt>User</dt>
-      <dd><%= @photo.user_id %></dd>
+              <input type="hidden" name="user_id" value="<%= @photo.user_id %>">
 
-    </dl>
+              <button class="btn btn-link">
+                <i class="fa fa-heart-o"></i>
+              </button>
+              <% if @photo.likes.count == 0 %>
+              <small class="text-muted">be the first to like this</small>
+              <% else %>
+              <% @photo.likes do |like| %>
+              <small class="text-muted"><%= like.user.username %></small>
+              <% end %>
+              <% end %>
+            </form>
+          </p>
 
-    <div class="btn-group btn-group-justified">
-      <a href="/photos" class="btn btn-primary">
-        Back
-      </a>
-      <a href="/photos/<%= @photo.id %>/edit" class="btn btn-warning">
-        Edit
-      </a>
-      <a href="/delete_photo/<%= @photo.id %>" class="btn btn-danger" rel="nofollow">
-        Delete
-      </a>
+        </div>
+      </div>
     </div>
   </div>
+
+  <% @photo.comments.each do |comment| %>
+  <ul class="media-list">
+    <li class="media">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="media-body">
+          <h6 class="media-heading">
+            <a href="/users/<%= comment.user_id %>"><%= comment.user.username %></a>
+            <small>
+              <%= time_ago_in_words(comment.created_at)%> ago
+            </small>
+          </h6>
+          <%= comment.body%>
+        </div>
+      </div>
+    </li>
+  </ul>
+  <% end %>
+  <% if current_user.username == @photo.user.username %>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+
+      <div class="btn-group btn-group-justified">
+        <a href="/photos" class="btn btn-primary">
+          <i class="fa fa-chevron-left"></i>
+        </a>
+        <a href="/photos/<%= @photo.id %>/edit" class="btn btn-warning">
+          <i class="fa fa-edit"></i>
+        </a>
+        <a href="/delete_photo/<%= @photo.id %>" class="btn btn-danger" rel="nofollow">
+          <i class="fa fa-trash-o"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <% else %>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+
+      <div class="btn-group btn-group-justified">
+        <a href="/photos" class="btn btn-primary">
+          <i class="fa fa-chevron-left"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+  <% end %>
 </div>
